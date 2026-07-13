@@ -1,0 +1,50 @@
+services:
+  # ---- PostgreSQL Database ----
+  db:
+    image: postgres:17-alpine
+    container_name: courtlink-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: PassHotaru1412
+      POSTGRES_DB: CourtLink
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ---- Backend (Express API) ----
+  backend:
+    build:
+      context: ./BE_CourtLink
+      dockerfile: Dockerfile
+    container_name: courtlink-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://postgres:PassHotaru1412@db:5432/CourtLink?schema=public
+      JWT_SECRET: Strong$KeyCourtlink1307JWTToken
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ---- Frontend (Next.js) ----
+  frontend:
+    build:
+      context: ./FE_CourtLink/fe_courtlink
+      dockerfile: Dockerfile
+    container_name: courtlink-frontend
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
