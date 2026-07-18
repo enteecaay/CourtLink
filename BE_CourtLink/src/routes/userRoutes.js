@@ -7,6 +7,7 @@ const router = express.Router();
  * @openapi
  * /api/v1/users/register:
  *   post:
+ *     tags: [Users]
  *     summary: Đăng ký tài khoản mới
  *     description: Tạo một tài khoản người dùng mới với tên, email và mật khẩu.
  *     requestBody:
@@ -41,6 +42,7 @@ router.post("/register", registerUser);
  * @openapi
  * /api/v1/users/login:
  *   post:
+ *     tags: [Users]
  *     summary: Đăng nhập
  *     description: Đăng nhập bằng email và mật khẩu, trả về JWT token.
  *     requestBody:
@@ -66,5 +68,15 @@ router.post("/register", registerUser);
  *         description: Email hoặc mật khẩu không đúng.
  */
 router.post("/login", login);
+
+router.post("auth/refresh-token", (req, res) => {
+  // Logic to refresh the token
+  res.json({ message: "Token refreshed" });
+});
+
+router.get("auth/me", (req, res) => {
+  // Logic to get the current user
+  res.json({ message: "Current user info" });
+});
 
 export { router as userRoutes };

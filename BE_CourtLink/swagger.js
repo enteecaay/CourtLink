@@ -5,9 +5,9 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "Express API với Swagger",
+      title: "CourtLink API",
       version: "1.0.0",
-      description: "Tài liệu hướng dẫn sử dụng các endpoints API",
+      description: "API documentation for the CourtLink badminton court booking platform",
     },
     servers: [
       {
@@ -15,8 +15,22 @@ const options = {
         description: "Development server",
       },
     ],
+    //  SECURITY SCHEME — tells Swagger how authentication works.
+    //    After adding this, Swagger UI shows an "Authorize" button
+    //    where you can paste your JWT token. All endpoints marked with
+    //    "security: [{ bearerAuth: [] }]" will auto-include the token.
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+          description: "Enter your JWT access token",
+        },
+      },
+    },
   },
-  // Đường dẫn đến các file chứa mã nguồn API để Swagger quét tài liệu
+  // Scan these files for @openapi JSDoc comments
   apis: ["./server.js", "./src/routes/*.js"],
 };
 

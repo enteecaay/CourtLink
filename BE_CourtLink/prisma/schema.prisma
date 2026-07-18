@@ -9,29 +9,49 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
+// 
+//    PRISMA RELATIONS EXPLAINED                               
+//                                                               
+//   A "relation" connects two models. Prisma needs:             
+//   1. A foreign key field (e.g. roleId Int)                    
+//   2. A relation field  (e.g. role Role @relation(...))        
+//   3. The reverse side   (e.g. users User[] on Role model)     
+//                                                               
+//   This lets you do powerful queries like:                      
+//   prisma.user.findUnique({                                    
+//     where: { email },                                         
+//     include: { role: true }  ← auto-joins the Role table      
+//   })                                                          
+// 
+
 model User {
-  id Int @id @default(autoincrement())
-  name String
-  email String @unique
-  password String
-  phoneNumber String @unique
-  avatar String
-  roleId Int
-  createAt DateTime @default(now())
-  updateAt DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  name        String
+  email       String   @unique
+  password    String
+  phoneNumber String   @unique
+  avatar      String?
+  roleId      Int
+  createAt    DateTime @default(now())
+  updateAt    DateTime @default(now())
+  role   Role @relation(fields: [roleId], references: [id])
+  refreshTokens RefreshToken[]
 }
 
 model RefreshToken {
-  id Int @id @default(autoincrement())
-  userId Int
-  token String
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String   @unique  // Added @unique so we can look up tokens efficiently
   expiredAt DateTime
-  CreateAt DateTime @default(now())
+  CreateAt  DateTime @default(now())
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Role {
-  id Int @id @default(autoincrement())
+  id   Int    @id @default(autoincrement())
   name String @unique
+  users User[]
 }

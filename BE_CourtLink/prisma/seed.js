@@ -18,7 +18,7 @@ async function main() {
       update: {},
       create: { name },
     });
-    console.log(`✅ Role "${name}" created`);
+    console.log(` Role "${name}" created`);
   }
 
   // Seed admin account
@@ -37,7 +37,7 @@ async function main() {
       roleId: adminRole.id,
     },
   });
-  console.log(`✅ Admin account created (admin@courtlink.com / admin123)`);
+  console.log(` Admin account created (admin@courtlink.com / admin123)`);
 }
 
 main()
